@@ -8,6 +8,4 @@ urlpatterns = patterns('',
  url(r'^healthfacility/(?P<pk>\d+)/update/$', update_facility ),
  url(r'^healthfacility/create/$', create_facility ),
  url(r'^healthfacility/render_tree/$', render_facilities ),
-
-
-        )
+)

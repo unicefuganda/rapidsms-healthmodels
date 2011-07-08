@@ -1,10 +1,7 @@
 from django import forms
 from django.utils.safestring import mark_safe
 from healthmodels.models import HealthFacility,HealthProvider
-from simple_locations.models import Point
-
-
-
+from rapidsms.contrib.locations.models import Point
     
 class HealthFacilityForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):

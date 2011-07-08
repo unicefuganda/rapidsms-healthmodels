@@ -9,7 +9,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
 from rapidsms.models import ExtensibleModelBase
-from simple_locations.models import Area, Point
+from rapidsms.contrib.locations.models import Location, Point
 
 
 class HealthFacilityTypeBase(models.Model):
@@ -43,7 +43,7 @@ class HealthFacilityBase(models.Model):
     type = models.ForeignKey(HealthFacilityType, blank=True, null=True)
     # Catchment areas should be locations that makes sense independently, i.e.
     # a city, town, village, parish, region, district, etc.
-    catchment_areas = models.ManyToManyField(Area, null=True, blank=True)
+    catchment_areas = models.ManyToManyField(Location, null=True, blank=True)
     # location is the physical location of the health facility itself.
     # This location should only represent the facility's location, and
     # shouldn't be overloaded to also represent the location of a town

@@ -4,7 +4,6 @@ from django.template import RequestContext
 from django.shortcuts import get_object_or_404
 from healthmodels.models.HealthFacility import HealthFacility
 from healthmodels.models.HealthProvider import HealthProvider
-from simple_locations.models import AreaType,Point,Area
 from django.views.decorators.cache import cache_control
 from django.http import HttpResponseRedirect,HttpResponse
 from healthmodels.views.forms import *
