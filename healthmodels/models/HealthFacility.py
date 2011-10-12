@@ -56,7 +56,7 @@ class HealthFacilityBase(models.Model):
     report_to = generic.GenericForeignKey('report_to_type', 'report_to_id')
 
     def __unicode__(self):
-        return self.name
+        return "%s %s" % (self.name, self.type or '')
 
     def save(self, *args, **kwargs):
         ''' generates a code if none provided '''
@@ -77,26 +77,26 @@ class HealthFacility(HealthFacilityBase):
         verbose_name = _("Health Facility")
         verbose_name_plural = _("Health Facilities")
     def is_root(self):
-        if self.report_to==None:
+        if self.report_to == None:
             return True
         else:
             return False
     def get_children(self):
 
-            children=HealthFacility.objects.filter(report_to_id=self.pk)
-            if len(children)>0:
+            children = HealthFacility.objects.filter(report_to_id=self.pk)
+            if len(children) > 0:
                 return children
             else:
                 return False
     def is_child_node(self):
-        children=HealthFacility.objects.filter(report_to_id=self.pk)
-        if len(children>0):
+        children = HealthFacility.objects.filter(report_to_id=self.pk)
+        if len(children > 0):
             return False
         else:
             return True
-    
-            
 
 
-       
-    
+
+
+
+
