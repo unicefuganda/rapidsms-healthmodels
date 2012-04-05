@@ -54,6 +54,7 @@ class HealthFacilityBase(models.Model):
     report_to_type = models.ForeignKey(ContentType, null=True, blank=True)
     report_to_id = models.PositiveIntegerField(null=True, blank=True)
     report_to = generic.GenericForeignKey('report_to_type', 'report_to_id')
+    district = models.TextField(blank=True, null=True, default='')
 
     def __unicode__(self):
         return "%s %s" % (self.name, self.type or '')
