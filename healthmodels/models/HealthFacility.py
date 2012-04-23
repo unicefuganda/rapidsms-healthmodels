@@ -32,7 +32,33 @@ class HealthFacilityType(HealthFacilityTypeBase):
         verbose_name = _("Health Facility Type")
         verbose_name_plural = _("Health Facility Types")
 
-
+OWNERS = (
+          ('GOVT', 'Government'),
+          ('NGO', 'NGO'),
+          ('PRIVATE', 'Private'),
+          )
+AUTHORITIES = (
+               ('AIDS PROG', 'AIDS PROG'),
+               ('COMMUNITY', 'COMMUNITY'),
+               ('CSO', 'CSO'),
+               ('GTZ', 'GTZ'),
+               ('HOSFA', 'HOSFA'),
+               ('MAP', 'MAP'),
+               ('MSU', 'MSU'),
+               ('OTHER NGO', 'OTHER NGO'),
+               ('PRIVATE', 'PRIVATE'),
+               ('RH UGANDA', 'RH UGANDA'),
+               ('RHU', 'RHU'),
+               ('SDA', 'SDA'),
+               ('TEA FACTORY', 'TEA FACTORY'),
+               ('TOURISM', 'TOURISM'),
+               ('UCBM', 'UCBM'),
+               ('UG. CLAYS', 'UG. CLAYS'),
+               ('UMMB', 'UMMB'),
+               ('UNHCR', 'UNHCR'),
+               ('UPMB', 'UPMB'),
+               ('WORLD VISION', 'WORLD VISION'),
+               )
 class HealthFacilityBase(models.Model):
 
     class Meta:
@@ -55,6 +81,8 @@ class HealthFacilityBase(models.Model):
     report_to_id = models.PositiveIntegerField(null=True, blank=True)
     report_to = generic.GenericForeignKey('report_to_type', 'report_to_id')
     district = models.TextField(blank=True, null=True, default='')
+    owner = models.TextField(null=True, blank=True, default='', choices=OWNERS)
+    authority = models.TextField(null=True, blank=True, default='', choices=AUTHORITIES)
 
     def __unicode__(self):
         return "%s %s" % (self.name, self.type or '')
