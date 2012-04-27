@@ -83,6 +83,7 @@ class HealthFacilityBase(models.Model):
     district = models.TextField(blank=True, null=True, default='')
     owner = models.TextField(null=True, blank=True, default='', choices=OWNERS)
     authority = models.TextField(null=True, blank=True, default='', choices=AUTHORITIES)
+    last_reporting_date = models.DateField(null=True) #latest submission date
 
     def __unicode__(self):
         return "%s %s" % (self.name, self.type or '')

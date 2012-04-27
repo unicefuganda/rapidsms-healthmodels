@@ -14,6 +14,7 @@ class HealthProviderBase(Contact):
 
     facility = models.ForeignKey('HealthFacility', null=True)
     location = models.ForeignKey(Location, null=True)
+    last_reporting_date = models.DateField(null=True)
 
 
 class HealthProvider(HealthProviderBase):
