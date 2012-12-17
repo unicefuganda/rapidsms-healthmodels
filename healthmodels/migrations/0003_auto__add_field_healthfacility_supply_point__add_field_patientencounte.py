@@ -8,35 +8,8 @@ class Migration(SchemaMigration):
 
     def forwards(self, orm):
         
-        # Adding field 'HealthFacility.supply_point'
-        db.add_column('healthmodels_healthfacility', 'supply_point', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['logistics.SupplyPoint'], null=True, blank=True), keep_default=False)
-
-        # Adding field 'PatientEncounter.submission'
-        db.add_column('healthmodels_patientencounter', 'submission', self.gf('django.db.models.fields.related.OneToOneField')(blank=True, related_name='report', unique=True, null=True, to=orm['rapidsms_xforms.XFormSubmission']), keep_default=False)
-
-        # Adding field 'PatientEncounter.reporter'
-        db.add_column('healthmodels_patientencounter', 'reporter', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['healthmodels.HealthProvider'], null=True, blank=True), keep_default=False)
-
-        # Adding field 'PatientEncounter.message'
-        db.add_column('healthmodels_patientencounter', 'message', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['rapidsms_httprouter.Message'], null=True, blank=True), keep_default=False)
-
-        # Adding field 'PatientEncounter.valid'
-        db.add_column('healthmodels_patientencounter', 'valid', self.gf('django.db.models.fields.BooleanField')(default=True), keep_default=False)
-
         # Adding field 'HealthFacilityBase.district'
         db.add_column('healthmodels_healthfacilitybase', 'district', self.gf('django.db.models.fields.TextField')(default='', null=True, blank=True), keep_default=False)
-
-        # Adding field 'FacilityReport.submission'
-        db.add_column('healthmodels_facilityreport', 'submission', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['rapidsms_xforms.XFormSubmission'], null=True, blank=True), keep_default=False)
-
-        # Adding field 'FacilityReport.reporter'
-        db.add_column('healthmodels_facilityreport', 'reporter', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['healthmodels.HealthProvider'], null=True, blank=True), keep_default=False)
-
-        # Adding field 'FacilityReport.message'
-        db.add_column('healthmodels_facilityreport', 'message', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['rapidsms_httprouter.Message'], null=True, blank=True), keep_default=False)
-
-        # Adding field 'FacilityReport.valid'
-        db.add_column('healthmodels_facilityreport', 'valid', self.gf('django.db.models.fields.BooleanField')(default=True), keep_default=False)
 
 
     def backwards(self, orm):

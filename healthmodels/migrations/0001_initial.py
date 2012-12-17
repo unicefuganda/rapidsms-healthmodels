@@ -8,11 +8,13 @@ class Migration(SchemaMigration):
     depends_on = (
         ("eav", "0001_initial"),
          ("rapidsms_httprouter", "0001_initial"),
-         ("rapidsms_xforms", "0001_initial"),)
+         ("rapidsms_xforms", "0004_auto__add_field_xformreportsubmission_created"),
+        ("logistics", "0001_initial"),
+        )
 
 
     def forwards(self, orm):
-        
+
         # Adding model 'HealthIdBase'
         db.create_table('healthmodels_healthidbase', (
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
@@ -149,7 +151,7 @@ class Migration(SchemaMigration):
 
 
     def backwards(self, orm):
-        
+
         # Deleting model 'HealthIdBase'
         db.delete_table('healthmodels_healthidbase')
 
