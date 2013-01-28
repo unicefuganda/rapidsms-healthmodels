@@ -10,7 +10,7 @@ class Migration(SchemaMigration):
     def forwards(self, orm):
         # Adding field 'HealthFacilityBase.uuid'
         db.add_column('healthmodels_healthfacilitybase', 'uuid',
-                      self.gf('django.db.models.fields.CharField')(default='', unique=True, max_length=100, blank=True),
+                      self.gf('django.db.models.fields.CharField')(max_length=100, unique=True, null=True, blank=True),
                       keep_default=False)
 
 
@@ -130,7 +130,7 @@ class Migration(SchemaMigration):
             'report_to_id': ('django.db.models.fields.PositiveIntegerField', [], {'null': 'True', 'blank': 'True'}),
             'report_to_type': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['contenttypes.ContentType']", 'null': 'True', 'blank': 'True'}),
             'type': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['healthmodels.HealthFacilityType']", 'null': 'True', 'blank': 'True'}),
-            'uuid': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '100', 'blank': 'True'})
+            'uuid': ('django.db.models.fields.CharField', [], {'max_length': '100', 'unique': 'True', 'null': 'True', 'blank': 'True'})
         },
         'healthmodels.healthfacilitytype': {
             'Meta': {'object_name': 'HealthFacilityType', '_ormbases': ['healthmodels.HealthFacilityTypeBase']},

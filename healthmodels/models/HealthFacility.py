@@ -84,7 +84,7 @@ class HealthFacilityBase(models.Model):
     owner = models.TextField(null=True, blank=True, default='', choices=OWNERS)
     authority = models.TextField(null=True, blank=True, default='', choices=AUTHORITIES)
     last_reporting_date = models.DateField(null=True) #latest submission date
-    uuid = models.CharField(max_length=100, blank=True, unique=True)
+    uuid = models.CharField(max_length=100, blank=True, unique=True, null=True)
 
     def __unicode__(self):
         return "%s %s" % (self.name, self.type or '')
