@@ -40,6 +40,8 @@ def and_i_edit_a_healthfacility(step):
   world.browser.click_link_by_text("Kochi hciii")
   world.browser.fill("uuid", uuid)
   world.browser.find_by_css('input[name=_save]').first.click()
+  world.browser.click_link_by_text("Kochi hciii")
+  assert world.browser.find_by_css('input[name=uuid]').first.value == uuid
 
 @step(u'Then I should see my changes are logged')
 def then_i_should_see_my_changes_are_logged(step):
