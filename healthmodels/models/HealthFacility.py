@@ -10,7 +10,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
 from rapidsms.models import ExtensibleModelBase
 from rapidsms.contrib.locations.models import Location, Point
-
+import reversion
 
 class HealthFacilityTypeBase(models.Model):
 
@@ -99,6 +99,7 @@ class HealthFacilityBase(models.Model):
                                           for i in range(10)]).lower()
         super(HealthFacilityBase, self).save(*args, **kwargs)
 
+reversion.register(HealthFacilityBase)
 
 class HealthFacility(HealthFacilityBase):
     __metaclass__ = ExtensibleModelBase
