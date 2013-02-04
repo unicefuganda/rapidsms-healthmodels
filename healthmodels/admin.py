@@ -3,7 +3,7 @@
 # maintainer rgaudin
 
 from django.contrib import admin
-
+import reversion
 from models import *
 
 admin.site.register(HealthId)
@@ -13,11 +13,11 @@ admin.site.register(PatientEncounter)
 admin.site.register(FacilityReport)
 
 
-class HealthFacilityTypeAdmin(admin.ModelAdmin):
+class HealthFacilityTypeAdmin(reversion.VersionAdmin):
     pass
 
 
-class HealthFacilityAdmin(admin.ModelAdmin):
+class HealthFacilityAdmin(reversion.VersionAdmin):
     pass
 
 admin.site.register(HealthFacility, HealthFacilityAdmin)
