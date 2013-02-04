@@ -45,6 +45,6 @@ def and_i_edit_a_healthfacility(step):
 def then_i_should_see_my_changes_are_logged(step):
   facility = HealthFacilityBase.objects.filter(name="Kochi")[0]
   version_list = reversion.get_for_object(facility)
-  assert len(version_list) == 1
+  assert len(version_list) > 0
   version = version_list[0]
   assert version.revision.comment == "Changed uuid."
