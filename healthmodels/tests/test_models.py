@@ -32,9 +32,10 @@ class TestHealthFacilityBase(TestCase):
       facility.save(cascade_update=False)
       assert mock_send_facility_update.called == False
 
-  @patch('django.db.models.Model.save')
-  def test_unsuccesful_cascade_update_do_not_save(self, mock_save):
+  @patch('fred_consumer.fred_connect.FredFacilitiesFetcher.send_facility_update')
+  def test_unsuccesful_cascade_update_do_not_save(self, mock_send_facility_update):
+      mock_send_facility_update.return_value = False
       facility = HealthFacilityBase(name="Dummy")
-      FredFacilitiesFetcher.send_facility_update = MagicMock(return_value = False)
       facility.save(cascade_update=True)
-      assert mock_save.called == False
+      self.failIf(facility.id)
+
