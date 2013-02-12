@@ -11,8 +11,6 @@ from django.contrib.contenttypes import generic
 from rapidsms.models import ExtensibleModelBase
 from rapidsms.contrib.locations.models import Location, Point
 import reversion
-from fred_consumer.fred_connect import FredFacilitiesFetcher
-
 
 class HealthFacilityTypeBase(models.Model):
 
@@ -91,13 +89,8 @@ class HealthFacilityBase(models.Model):
     def __unicode__(self):
         return "%s %s" % (self.name, self.type or '')
 
-    def save(self, cascade_update = True, *args,  **kwargs):
-
-        if cascade_update:
-            cascade_update_succedded = FredFacilitiesFetcher.send_facility_update(self)
-            if not cascade_update_succedded:
-                return
-
+    def save(self, *args, **kwargs):
+        ''' generates a code if none provided '''
         if not self.code:
             # generation is dumb now and not conflict-safe
             # probably suffiscient to handle human entry through django-admin
@@ -133,3 +126,9 @@ class HealthFacility(HealthFacilityBase):
             return False
         else:
             return True
+
+
+
+
+
+
