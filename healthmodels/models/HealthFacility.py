@@ -105,6 +105,7 @@ class HealthFacilityBase(models.Model):
             chars = '1234567890_QWERTYUOPASDFGHJKLZXCVBNM'
             self.code = u"gen" + u"".join([choice(chars) \
                                           for i in range(10)]).lower()
+
         super(HealthFacilityBase, self).save(*args, **kwargs)
 
 reversion.register(HealthFacilityBase)
