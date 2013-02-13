@@ -36,6 +36,6 @@ class TestHealthFacilityBase(TestCase):
   def test_unsuccesful_cascade_update_do_not_save(self, mock_send_facility_update):
       mock_send_facility_update.return_value = False
       facility = HealthFacilityBase(name="Dummy")
-      facility.save(cascade_update=True)
+      self.failUnlessRaises(ValidationError, facility.save, cascade_update=True)
       self.failIf(facility.id)
 
