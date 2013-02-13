@@ -3,6 +3,7 @@
 # maintainer rgaudin
 
 from random import choice
+from django.core.exceptions import ValidationError
 
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
@@ -91,13 +92,24 @@ class HealthFacilityBase(models.Model):
     def __unicode__(self):
         return "%s %s" % (self.name, self.type or '')
 
+#    @classmethod
+#    def create(cls, cascade_update=False):
+#        if cascade_update
+#        facility = cls(cascade_update=cascade_update)
+#        return facility
+
+    def clean(self, *args, **kwargs):
+        cascade_update_succedded = FredFacilitiesFetcher.send_facility_update(self)
+        if not cascade_update_succedded:
+            raise ValidationError('Cascade update failed')
+
+    def full_clean(self, *args, **kwargs):
+        return self.clean(*args, **kwargs)
+
     def save(self, cascade_update = True, *args,  **kwargs):
 
         if cascade_update:
-            cascade_update_succedded = FredFacilitiesFetcher.send_facility_update(self)
-
-            if not cascade_update_succedded:
-                return
+            self.full_clean(*args, **kwargs)
 
         if not self.code:
             # generation is dumb now and not conflict-safe
