@@ -11,7 +11,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
 from rapidsms.models import ExtensibleModelBase
 from rapidsms.contrib.locations.models import Location, Point
-import reversion
+import reversion, settings
 from fred_consumer.fred_connect import FredFacilitiesFetcher
 
 
@@ -108,7 +108,7 @@ class HealthFacilityBase(models.Model):
 
     def save(self, cascade_update = True, *args,  **kwargs):
 
-        if cascade_update:
+        if cascade_update and settings.CASCADE_UPDATE_TO_DHIS2:
             self.full_clean(*args, **kwargs)
 
         if not self.code:
