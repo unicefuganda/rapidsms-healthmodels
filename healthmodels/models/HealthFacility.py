@@ -14,7 +14,6 @@ from rapidsms.contrib.locations.models import Location, Point
 import reversion, settings
 from fred_consumer.fred_connect import FredFacilitiesFetcher
 
-
 class HealthFacilityTypeBase(models.Model):
 
     class Meta:
@@ -92,11 +91,6 @@ class HealthFacilityBase(models.Model):
     def __unicode__(self):
         return "%s %s" % (self.name, self.type or '')
 
-#    @classmethod
-#    def create(cls, cascade_update=False):
-#        if cascade_update
-#        facility = cls(cascade_update=cascade_update)
-#        return facility
 
     def clean(self, *args, **kwargs):
         cascade_update_succedded = FredFacilitiesFetcher.send_facility_update(self)
@@ -147,3 +141,9 @@ class HealthFacility(HealthFacilityBase):
             return False
         else:
             return True
+
+
+
+
+
+
