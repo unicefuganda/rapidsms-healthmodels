@@ -92,18 +92,12 @@ class HealthFacilityBase(models.Model):
         return "%s %s" % (self.name, self.type or '')
 
 
-    def clean(self, *args, **kwargs):
-        cascade_update_succedded = FredFacilitiesFetcher.send_facility_update(self)
-        if not cascade_update_succedded:
-            raise ValidationError('Cascade update failed')
-
-    def full_clean(self, *args, **kwargs):
-        return self.clean(*args, **kwargs)
-
     def save(self, cascade_update = True, *args,  **kwargs):
 
         if cascade_update and settings.CASCADE_UPDATE_TO_DHIS2:
-            self.full_clean(*args, **kwargs)
+            cascade_update_succedded = FredFacilitiesFetcher.send_facility_update(self)
+            if not cascade_update_succedded:
+                raise ValidationError('Cascade update failed')
 
         if not self.code:
             # generation is dumb now and not conflict-safe
