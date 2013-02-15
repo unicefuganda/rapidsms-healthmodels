@@ -92,9 +92,9 @@ class HealthFacilityBase(models.Model):
         return "%s %s" % (self.name, self.type or '')
 
 
-    def clean(self, cascade_update = True, *args, **kwargs):
+    def clean(self, *args, **kwargs):
 
-        if cascade_update and settings.CASCADE_UPDATE_TO_DHIS2:
+        if settings.CASCADE_UPDATE_TO_DHIS2:
             cascade_update_succedded = FredFacilitiesFetcher.send_facility_update(self)
             if not cascade_update_succedded:
                 raise ValidationError('Cascade update failed')

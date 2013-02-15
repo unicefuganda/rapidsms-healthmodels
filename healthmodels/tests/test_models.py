@@ -19,7 +19,15 @@ class TestHealthFacilityBase(TestCase):
 
     new_facility = HealthFacilityBase(name="Dummy 1", uuid="uuid")
     self.failUnlessRaises(IntegrityError, new_facility.save, cascade_update=False)
-    
+
+  def test_storage_with_feature_turned_off(self):
+      orig = settings.CASCADE_UPDATE_TO_DHIS2
+      settings.CASCADE_UPDATE_TO_DHIS2 = False
+      facility = HealthFacility(name="Dummy 1")
+      facility.save()
+      self.failUnless(facility.id)
+      settings.CASCADE_UPDATE_TO_DHIS2 = orig
+
   if settings.CASCADE_UPDATE_TO_DHIS2:
     @patch('fred_consumer.fred_connect.FredFacilitiesFetcher.send_facility_update')
     def test_save(self, mock_send_facility_update):
