@@ -2,6 +2,7 @@
 import json
 from lettuce import *
 from lxml import html
+from random import randint
 from nose.tools import assert_equals
 from splinter import Browser
 from lettuce.django import django_url
@@ -10,12 +11,14 @@ import reversion
 from fred_consumer.models import FredConfig, HealthFacilityIdMap,Failure
 from django.db import transaction
 
-FRED_CONFIG = {"url": "http://dhis:8080/dhis2/api-fred/v1///", "username": "api", "password": "P@ssw0rd"}
+FRED_CONFIG = {"url": "http://dhis/api-fred/v1///", "username": "api", "password": "P@ssw0rd"}
+
 NO_OF_EXISTING_FAILURE = len(Failure.objects.all())
 CONFIG = {
     'test_facility_url'      : FRED_CONFIG['url'] + 'facilities/6VeE8JrylXn',
     'uuid'  :                  "234567"
 }
+RANDOM_FACILTY_NAME = "TW"+ str(randint(1,9999))
 
 @transaction.commit_on_success
 def create_facility(f):
@@ -61,7 +64,7 @@ def dont_have_existing_facility_with_uid(step):
 def edit_a_healthfacility(step):
     visit("/admin/healthmodels/healthfacility")
     world.browser.click_link_by_text("ThoughtWorks facility ")
-    world.browser.fill("name", "TW facility updated")
+    world.browser.fill("name", RANDOM_FACILTY_NAME)
     world.browser.click_link_by_text("Today")
 
 
@@ -71,9 +74,8 @@ def edit_a_healthfacility(step):
 
 @step(u'Then I should see my facility changes are made')
 def edit_a_healthfacility(step):
-    updated_name = "TW facility updated"
-    world.browser.click_link_by_text(updated_name+ " ")
-    assert world.browser.find_by_css('input[name=name]').first.value == updated_name
+    world.browser.click_link_by_text(RANDOM_FACILTY_NAME + " ")
+    assert world.browser.find_by_css('input[name=name]').first.value == RANDOM_FACILTY_NAME
 
 @step(u'Then I should see an error')
 def should_see_an_error(step):
@@ -85,7 +87,7 @@ def should_have_a_failure(step):
     failure = Failure.objects.latest('time')
 
     assert failure.exception == "DoesNotExist:HealthFacilityIdMap matching query does not exist."
-    assert failure.json == json.dumps({"name": "TW facility updated", "uuid": CONFIG['uuid']})
+    assert failure.json == json.dumps({"name": RANDOM_FACILTY_NAME, "uuid": CONFIG['uuid']})
 
 @step(u'And I should see my changes are logged')
 def then_i_should_see_my_changes_are_logged(step):
