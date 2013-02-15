@@ -96,8 +96,8 @@ class HealthFacilityBase(models.Model):
 
         if cascade_update and settings.CASCADE_UPDATE_TO_DHIS2:
             cascade_update_succedded = FredFacilitiesFetcher.send_facility_update(self)
-        if not cascade_update_succedded:
-            raise ValidationError('Cascade update failed')
+            if not cascade_update_succedded:
+                raise ValidationError('Cascade update failed')
 
     def save(self, cascade_update = True, *args,  **kwargs):
 
