@@ -63,8 +63,9 @@ def dont_have_existing_facility_with_uid(step):
 @step(u'When I edit a HealthFacility')
 def edit_a_healthfacility(step):
     visit("/admin/healthmodels/healthfacility")
+    world.browser.is_text_present("ThoughtWorks facility ", wait_time=3)
     world.browser.click_link_by_text("ThoughtWorks facility ")
-    assert world.browser.is_element_present_by_name("name", 3)
+    assert world.browser.is_element_present_by_name("name", wait_time=3)
     world.browser.fill("name", RANDOM_FACILTY_NAME)
     world.browser.click_link_by_text("Today")
 
@@ -75,6 +76,7 @@ def edit_a_healthfacility(step):
 
 @step(u'Then I should see my facility changes are made')
 def edit_a_healthfacility(step):
+    world.browser.is_text_present(RANDOM_FACILTY_NAME, wait_time=3)
     world.browser.click_link_by_text(RANDOM_FACILTY_NAME + " ")
     assert world.browser.find_by_css('input[name=name]').first.value == RANDOM_FACILTY_NAME
 
