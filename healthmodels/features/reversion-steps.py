@@ -64,6 +64,7 @@ def dont_have_existing_facility_with_uid(step):
 def edit_a_healthfacility(step):
     visit("/admin/healthmodels/healthfacility")
     world.browser.click_link_by_text("ThoughtWorks facility ")
+    assert world.browser.is_element_present_by_name("name", 3)
     world.browser.fill("name", RANDOM_FACILTY_NAME)
     world.browser.click_link_by_text("Today")
 
