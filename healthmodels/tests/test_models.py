@@ -28,10 +28,23 @@ class TestHealthFacilityBase(TestCase):
       self.failUnless(facility.id)
       settings.CASCADE_UPDATE_TO_DHIS2 = orig
 
+  def test_create_facility_without_cascading(self):
+      facility = HealthFacility(name="Dummy 1")
+      facility.save(cascade_update=False)
+      self.failUnless(facility.id)
+      self.failIf(facility.uuid)
+
+      facility = HealthFacility(name="Dummy 2")
+      facility.save()
+      self.failUnless(facility.id)
+      self.failIf(facility.uuid)
+
   if settings.CASCADE_UPDATE_TO_DHIS2:
     @patch('fred_consumer.fred_connect.FredFacilitiesFetcher.send_facility_update')
     def test_save(self, mock_send_facility_update):
         facility = HealthFacilityBase(name="Dummy")
+        facility.save(cascade_update=False)
+        facility.name = "changed name"
         facility.save()
         assert mock_send_facility_update.called == True
 
@@ -45,6 +58,28 @@ class TestHealthFacilityBase(TestCase):
     def test_unsuccesful_cascade_update_do_not_save(self, mock_send_facility_update):
         mock_send_facility_update.return_value = False
         facility = HealthFacilityBase(name="Dummy")
+        facility.save(cascade_update=False)
+        self.failUnless(facility.id)
+        facility.name = "changed name"
         self.failUnlessRaises(ValidationError, facility.save, cascade_update=True)
-        self.failIf(facility.id)
+        facility = HealthFacilityBase.objects.get(id=facility.id)
+        assert facility.name == "Dummy"
 
+
+    @patch('fred_consumer.fred_connect.FredFacilitiesFetcher.create_facility')
+    def test_create_facility_without_cascading(self, mock_create_facility):
+        mock_create_facility.return_value = "randomuuid"
+        facility = HealthFacility(name="Dummy 1")
+        facility.save()
+        assert mock_create_facility.called == True
+        self.failUnless(facility.id)
+        assert facility.uuid == "randomuuid"
+
+    @patch('fred_consumer.fred_connect.FredFacilitiesFetcher.create_facility')
+    def test_create_facility_with_cascading_and_raise_exception(self, mock_create_facility):
+        mock_create_facility.return_value = None
+        facility = HealthFacility(name="Dummy 1")
+        self.failUnlessRaises(ValidationError, facility.save)
+        assert mock_create_facility.called == True
+        self.failIf(facility.id)
+        self.failIf(facility.uuid)
