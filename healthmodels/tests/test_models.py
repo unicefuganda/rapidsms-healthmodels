@@ -3,7 +3,7 @@ from django.core import management
 from healthmodels.models.HealthFacility import *
 from django.db import IntegrityError
 from mock import *
-import settings
+from django.conf import settings
 
 class TestHealthFacilityBase(TestCase):
 
