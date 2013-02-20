@@ -10,6 +10,7 @@ from healthmodels.models.HealthFacility import *
 import reversion
 from fred_consumer.models import FredConfig, HealthFacilityIdMap,Failure
 from django.db import transaction
+from fred_consumer.fred_connect import FredFacilitiesFetcher
 
 FRED_CONFIG = {"url": "http://dhis/api-fred/v1///", "username": "api", "password": "P@ssw0rd"}
 
@@ -34,9 +35,15 @@ def set_browser(scenario):
 def close_browser_and_clean_data(scenario):
   visit("/admin/logout/")
   world.browser.quit()
-  if(scenario.name == "Changes to HealthFacility should be logged"):
-      HealthFacilityIdMap.objects.get(uuid=CONFIG['uuid']).delete()
-  HealthFacility.objects.get(uuid=CONFIG['uuid']).delete()
+  facilities = HealthFacility.objects.filter(uuid=CONFIG['uuid']).all()
+  if facilities:
+      facilities.delete()
+  facilities = HealthFacility.objects.filter(name='ThoughtWorks facility').all()
+  if facilities:
+      facilities.delete()
+  maps = HealthFacilityIdMap.objects.filter(uuid=CONFIG['uuid']).all()
+  if maps:
+      maps.delete()
 
 def visit(url):
   world.browser.visit(django_url(url))
@@ -99,3 +106,22 @@ def then_i_should_see_my_changes_are_logged(step):
   assert len(version_list) > 0
   version = version_list[0]
   assert version.revision.comment == "Changed name and last_reporting_date."
+
+@step(u'And I create a new health facility')
+def create_a_facility(step):
+    visit("/admin/healthmodels/healthfacility/add/")
+    world.browser.fill("name", "ThoughtWorks facility")
+    world.browser.click_link_by_text("Today")
+    world.browser.find_by_css('input[name=_save]').first.click()
+
+@step(u'Then I should see my facility in fred provider')
+def check_facility_in_provider(step):
+    visit("/admin/healthmodels/healthfacility")
+    world.browser.is_text_present("ThoughtWorks facility ", wait_time=3)
+    world.browser.click_link_by_text("ThoughtWorks facility ")
+    uuid = world.browser.find_by_css('input[name=uuid]').first.value
+    fetcher = FredFacilitiesFetcher(FRED_CONFIG)
+    facility_in_fred = fetcher.get_facility(uuid)
+    assert facility_in_fred['name'] == world.browser.find_by_css('input[name=name]').first.value
+    HealthFacilityIdMap.objects.get(uuid=uuid).delete()
+

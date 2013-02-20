@@ -15,3 +15,8 @@ Feature: Updating facility
    And I attempt to save
    Then I should see an error
    And I should have a failure object created to report it
+
+ Scenario: Create HealthFacility - Happy path
+   Given I am logged in as admin
+   And I create a new health facility
+   Then I should see my facility in fred provider
