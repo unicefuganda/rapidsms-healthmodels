@@ -101,7 +101,7 @@ class HealthFacilityBase(models.Model):
                 cascade_update_succedded = FredFacilitiesFetcher.send_facility_update(self)
                 if not cascade_update_succedded:
                     raise ValidationError('Cascade update failed')
-            else:
+            elif self.uuid in [None, ""]:
                 self.uuid = FredFacilitiesFetcher.create_facility(self)
                 if not self.uuid:
                     raise ValidationError('Cascade update failed')

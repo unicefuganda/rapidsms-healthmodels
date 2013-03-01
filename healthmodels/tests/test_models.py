@@ -76,6 +76,24 @@ class TestHealthFacilityBase(TestCase):
         assert facility.uuid == "randomuuid"
 
     @patch('fred_consumer.fred_connect.FredFacilitiesFetcher.create_facility')
+    def test_create_facility_without_cascading_with_empty_uuid(self, mock_create_facility):
+        mock_create_facility.return_value = "randomuuid"
+        facility = HealthFacility(name="Dummy 1", uuid="")
+        facility.save()
+        assert mock_create_facility.called == True
+        self.failUnless(facility.id)
+        assert facility.uuid == "randomuuid"
+
+    @patch('fred_consumer.fred_connect.FredFacilitiesFetcher.create_facility')
+    def test_create_facility_without_double_cascading(self, mock_create_facility):
+        facility = HealthFacility(name="Dummy 1", uuid="randomuuid")
+        facility.save()
+        assert mock_create_facility.called == False
+        self.failUnless(facility.id)
+        assert facility.uuid == "randomuuid"
+
+
+    @patch('fred_consumer.fred_connect.FredFacilitiesFetcher.create_facility')
     def test_create_facility_with_cascading_and_raise_exception(self, mock_create_facility):
         mock_create_facility.return_value = None
         facility = HealthFacility(name="Dummy 1")
