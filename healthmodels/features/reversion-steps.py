@@ -12,7 +12,7 @@ from fred_consumer.models import FredConfig, HealthFacilityIdMap,Failure
 from django.db import transaction
 from fred_consumer.fred_connect import FredFacilitiesFetcher
 
-FRED_CONFIG = {"url": "http://dhis/api-fred/v1///", "username": "api", "password": "P@ssw0rd"}
+FRED_CONFIG = FredConfig.get_settings()
 
 NO_OF_EXISTING_FAILURE = len(Failure.objects.all())
 RANDOM_FACILTY_NAME = "TW"+ str(randint(1,9999))
@@ -25,7 +25,6 @@ def create_facility(f):
 @before.each_scenario
 def set_browser(scenario):
   world.browser = Browser()
-  FredConfig.store_fred_configs(FRED_CONFIG)
   world.uuid = None
 
 def destroy_data_with_uuid(uuid):
@@ -94,7 +93,7 @@ def should_have_a_failure(step):
     assert ('HTTPError:{"name":"length must be between 2 and 160"}:http://dhis/api-fred/v1/facilities/' in failure.exception) == True
     failure_json = json.loads(failure.json)
     assert failure_json['name'] == " "
-    assert failure_json['id'] == world.uuid
+    assert failure_json['uuid'] == world.uuid
 
 @step(u'And I should see my changes are logged')
 def then_i_should_see_my_changes_are_logged(step):
