@@ -28,7 +28,7 @@ def set_browser(scenario):
   world.uuid = None
 
 def destroy_data_with_uuid(uuid):
-    facilities = HealthFacility.objects.filter(uuid=uuid).all()
+    facilities = HealthFacility.objects.filter(name="ThoughtWorks facility").all()
     if facilities:
         facilities.delete()
     maps = HealthFacilityIdMap.objects.filter(uuid=uuid).all()
@@ -80,6 +80,7 @@ def edit_a_healthfacility(step):
     world.browser.is_text_present(RANDOM_FACILTY_NAME, wait_time=3)
     world.browser.click_link_by_text(RANDOM_FACILTY_NAME + " ")
     assert world.browser.find_by_css('input[name=name]').first.value == RANDOM_FACILTY_NAME
+    assert world.browser.find_by_id("id_active").first.checked
 
 @step(u'Then I should see an error')
 def should_see_an_error(step):
@@ -126,5 +127,23 @@ def check_facility_in_provider(step):
     fetcher = FredFacilitiesFetcher(FRED_CONFIG)
     facility_in_fred = fetcher.get_facility(uuid)
     assert facility_in_fred['name'] == world.browser.find_by_css('input[name=name]').first.value
+    assert facility_in_fred['active'] == world.browser.find_by_id("id_active").first.checked
     HealthFacilityIdMap.objects.get(uuid=uuid).delete()
+
+@step(u'When I mark the facility inactive')
+def when_i_mark_the_facility_inactive(step):
+    visit("/admin/healthmodels/healthfacility")
+    world.browser.is_text_present("ThoughtWorks facility ", wait_time=3)
+    world.browser.click_link_by_text("ThoughtWorks facility ")
+    assert world.browser.is_element_present_by_name("name", wait_time=3)
+    world.browser.find_by_id("id_active").uncheck()
+    world.uuid = world.browser.find_by_css('input[name=uuid]').first.value
+
+@step(u'Then I should see my facility changed in fred provider')
+def then_i_should_see_my_facility_changed_in_fred_provider(step):
+    fetcher = FredFacilitiesFetcher(FRED_CONFIG)
+    facility_in_fred = fetcher.get_facility(world.uuid)
+    assert facility_in_fred['active'] == False
+    HealthFacilityIdMap.objects.get(uuid=world.uuid).delete()
+
 

@@ -21,3 +21,10 @@ Feature: Updating facility
    Given I am logged in as admin
    And I create a new health facility
    Then I should see my facility in fred provider
+
+ Scenario: Making a facility inactive
+  Given I am logged in as admin
+  And I create a new health facility
+  When I mark the facility inactive
+  And I attempt to save
+  Then I should see my facility changed in fred provider

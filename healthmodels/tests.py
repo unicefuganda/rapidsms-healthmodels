@@ -20,6 +20,21 @@ class TestHealthFacilityBase(TestCase):
     new_facility = HealthFacilityBase(name="Dummy 1", uuid="uuid")
     self.failUnlessRaises(IntegrityError, new_facility.save, cascade_update=False)
 
+
+  def test_active_field(self):
+      facility = HealthFacilityBase(name="Dummy")
+      facility.save(cascade_update = False)
+      self.failUnless(facility.id)
+
+      assert facility.active == True
+
+      new_facility = HealthFacilityBase(name="Dummy", active = False)
+      new_facility.save(cascade_update=False)
+      self.failUnless(new_facility.id)
+
+      assert new_facility.active == False
+
+
   def test_storage_with_feature_turned_off(self):
       orig = settings.CASCADE_UPDATE_TO_DHIS2
       settings.CASCADE_UPDATE_TO_DHIS2 = False
