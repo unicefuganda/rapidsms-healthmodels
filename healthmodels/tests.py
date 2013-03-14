@@ -54,7 +54,7 @@ class TestHealthFacilityBase(TestCase):
       self.failUnless(facility.id)
       self.failIf(facility.uuid)
 
-  if settings.CASCADE_UPDATE_TO_FRED
+  if settings.CASCADE_UPDATE_TO_FRED:
     @patch('fred_consumer.fred_connect.FredFacilitiesFetcher.send_facility_update')
     def test_save(self, mock_send_facility_update):
         facility = HealthFacilityBase(name="Dummy")
