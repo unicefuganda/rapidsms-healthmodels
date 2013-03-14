@@ -13,7 +13,7 @@ from rapidsms.models import ExtensibleModelBase
 from rapidsms.contrib.locations.models import Location, Point
 import reversion
 from django.conf import settings
-if settings.CASCADE_UPDATE_TO_DHIS2:
+if settings.CASCADE_UPDATE_TO_FRED:
   from fred_consumer.fred_connect import FredFacilitiesFetcher
 
 class HealthFacilityTypeBase(models.Model):
@@ -97,7 +97,7 @@ class HealthFacilityBase(models.Model):
 
     def clean(self, *args, **kwargs):
 
-        if settings.CASCADE_UPDATE_TO_DHIS2:
+        if settings.CASCADE_UPDATE_TO_FRED:
             if self.id:
                 cascade_update_succedded = FredFacilitiesFetcher.send_facility_update(self)
                 if not cascade_update_succedded:

@@ -36,12 +36,12 @@ class TestHealthFacilityBase(TestCase):
 
 
   def test_storage_with_feature_turned_off(self):
-      orig = settings.CASCADE_UPDATE_TO_DHIS2
-      settings.CASCADE_UPDATE_TO_DHIS2 = False
+      orig = settings.CASCADE_UPDATE_TO_FRED
+      settings.CASCADE_UPDATE_TO_FRED = False
       facility = HealthFacility(name="Dummy 1")
       facility.save()
       self.failUnless(facility.id)
-      settings.CASCADE_UPDATE_TO_DHIS2 = orig
+      settings.CASCADE_UPDATE_TO_FRED= orig
 
   def test_create_facility_without_cascading(self):
       facility = HealthFacility(name="Dummy 1")
@@ -54,7 +54,7 @@ class TestHealthFacilityBase(TestCase):
       self.failUnless(facility.id)
       self.failIf(facility.uuid)
 
-  if settings.CASCADE_UPDATE_TO_DHIS2:
+  if settings.CASCADE_UPDATE_TO_FRED
     @patch('fred_consumer.fred_connect.FredFacilitiesFetcher.send_facility_update')
     def test_save(self, mock_send_facility_update):
         facility = HealthFacilityBase(name="Dummy")
