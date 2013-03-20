@@ -4,6 +4,7 @@ from healthmodels.models.HealthFacility import *
 from django.db import IntegrityError
 from mock import *
 from django.conf import settings
+import json
 
 class TestHealthFacilityBase(TestCase):
 
@@ -54,7 +55,39 @@ class TestHealthFacilityBase(TestCase):
       self.failUnless(facility.id)
       self.failIf(facility.uuid)
 
-  if settings.CASCADE_UPDATE_TO_DHIS2:
+  def test_store_json_update(self):
+      facility_json = json.loads('{"facilities":[{"uuid":"6VeE8JrylXn","name":" BATMAN HC II","active":true,"href":"http:/example/6VeE8JrylXn","createdAt":"2012-08-14T10:00:07.701+0000","updatedAt":"2013-01-22T15:09:55.543+0000","coordinates":[2.2222,0.1111]}]}')['facilities'][0]
+
+      facility = HealthFacility(name="Dummy", uuid=facility_json['uuid'], active = False)
+      facility.save(cascade_update=False)
+      self.failUnless(facility.id)
+
+      assert facility.name == 'Dummy'
+      assert facility.uuid == facility_json['uuid']
+      assert facility.active == False
+
+      HealthFacility.store_json(facility_json)
+      facility = HealthFacility.objects.get(id=facility.id)
+
+      assert facility.name == facility_json['name']
+      assert facility.active == facility_json['active']
+      assert facility.uuid == facility_json['uuid']
+
+
+  def test_store_json_create(self):
+      facility_json = json.loads('{"facilities":[{"uuid":"6VeE8JrylXn","name":" BATMAN HC II","active":true,"href":"http:/example/6VeE8JrylXn","createdAt":"2012-08-14T10:00:07.701+0000","updatedAt":"2013-01-22T15:09:55.543+0000","coordinates":[2.2222,0.1111]}]}')['facilities'][0]
+
+      facility = HealthFacility.store_json(facility_json)
+      self.failUnless(facility.id)
+
+      facility = HealthFacilityBase.objects.get(id = facility.id)
+
+      assert facility.name == facility_json['name']
+      assert facility.active == facility_json['active']
+      assert facility.uuid == facility_json['uuid']
+
+
+  if settings.CASCADE_UPDATE_TO_FRED:
     @patch('fred_consumer.fred_connect.FredFacilitiesFetcher.send_facility_update')
     def test_save(self, mock_send_facility_update):
         facility = HealthFacilityBase(name="Dummy")

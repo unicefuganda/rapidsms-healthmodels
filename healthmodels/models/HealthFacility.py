@@ -121,6 +121,15 @@ class HealthFacilityBase(models.Model):
 
         super(HealthFacilityBase, self).save(*args, **kwargs)
 
+    @classmethod
+    def store_json(self, json):
+        facility = HealthFacilityBase.objects.get_or_create(uuid = json['uuid'])[0]
+        facility.name = json['name']
+        facility.active = json['active']
+        facility.save()
+        return facility
+
+
 reversion.register(HealthFacilityBase)
 
 class HealthFacility(HealthFacilityBase):
