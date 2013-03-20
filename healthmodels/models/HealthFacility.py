@@ -122,11 +122,11 @@ class HealthFacilityBase(models.Model):
         super(HealthFacilityBase, self).save(*args, **kwargs)
 
     @classmethod
-    def store_json(self, json):
+    def store_json(self, json, cascade_update = False):
         facility = HealthFacilityBase.objects.get_or_create(uuid = json['uuid'])[0]
         facility.name = json['name']
         facility.active = json['active']
-        facility.save(cascade_update = False)
+        facility.save(cascade_update = cascade_update)
         return facility
 
 
