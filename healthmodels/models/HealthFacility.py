@@ -126,7 +126,7 @@ class HealthFacilityBase(models.Model):
         facility = HealthFacilityBase.objects.get_or_create(uuid = json['uuid'])[0]
         facility.name = json['name']
         facility.active = json['active']
-        facility.save()
+        facility.save(cascade_update = False)
         return facility
 
 
