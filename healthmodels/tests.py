@@ -58,6 +58,8 @@ class TestHealthFacilityBase(TestCase):
   def test_store_json_update(self):
       facility_json = json.loads('{"facilities":[{"uuid":"6VeE8JrylXn","name":" BATMAN HC II","active":true,"href":"http:/example/6VeE8JrylXn","createdAt":"2012-08-14T10:00:07.701+0000","updatedAt":"2013-01-22T15:09:55.543+0000","coordinates":[2.2222,0.1111]}]}')['facilities'][0]
 
+      facility_json['name'] = facility_json['name'].encode('utf-8')
+
       facility = HealthFacility(name="Dummy", uuid=facility_json['uuid'], active = False)
       facility.save(cascade_update=False)
       self.failUnless(facility.id)
@@ -76,6 +78,8 @@ class TestHealthFacilityBase(TestCase):
 
   def test_store_json_create(self):
       facility_json = json.loads('{"facilities":[{"uuid":"6VeE8JrylXn","name":" BATMAN HC II","active":true,"href":"http:/example/6VeE8JrylXn","createdAt":"2012-08-14T10:00:07.701+0000","updatedAt":"2013-01-22T15:09:55.543+0000","coordinates":[2.2222,0.1111]}]}')['facilities'][0]
+
+      facility_json['name'] = facility_json['name'].encode('utf-8')
 
       facility = HealthFacility.store_json(facility_json)
       self.failUnless(facility.id)
