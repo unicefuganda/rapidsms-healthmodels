@@ -126,6 +126,8 @@ class HealthFacilityBase(models.Model):
         facility = HealthFacilityBase.objects.get_or_create(uuid = json['uuid'])[0]
         facility.name = json['name']
         facility.active = json['active']
+        facility.type = HealthFacilityType.objects.get_or_create(name=json['properties']['type'])[0]
+        facility.owner = json['properties']['ownership']
         facility.save(cascade_update = cascade_update)
         return facility
 
