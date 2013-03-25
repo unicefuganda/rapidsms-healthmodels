@@ -122,13 +122,15 @@ class HealthFacilityBase(models.Model):
         super(HealthFacilityBase, self).save(*args, **kwargs)
 
     @classmethod
-    def store_json(self, json, cascade_update = False):
+    def store_json(self, json, comment, cascade_update = False):
         facility = HealthFacilityBase.objects.get_or_create(uuid = json['uuid'])[0]
         facility.name = json['name']
         facility.active = json['active']
         facility.type = HealthFacilityType.objects.get_or_create(name=json['properties']['type'])[0]
         facility.owner = json['properties']['ownership']
-        facility.save(cascade_update = cascade_update)
+        with reversion.create_revision():
+            facility.save(cascade_update = cascade_update)
+            reversion.set_comment(comment)
         return facility
 
 

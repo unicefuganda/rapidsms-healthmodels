@@ -8,6 +8,7 @@ from splinter import Browser
 from lettuce.django import django_url
 from healthmodels.models.HealthFacility import *
 import reversion
+from reversion.models import Revision
 from fred_consumer.models import FredConfig, HealthFacilityIdMap,Failure
 from django.db import transaction
 from fred_consumer.fred_connect import FredFacilitiesFetcher
@@ -39,6 +40,7 @@ def destroy_data_with_uuid(uuid):
 def close_browser_and_clean_data(scenario):
   visit("/admin/logout/")
   world.browser.quit()
+  Revision.objects.all().delete()
   if world.uuid:
       destroy_data_with_uuid(world.uuid)
 
@@ -146,4 +148,16 @@ def then_i_should_see_my_facility_changed_in_fred_provider(step):
     assert facility_in_fred['active'] == False
     HealthFacilityIdMap.objects.get(uuid=world.uuid).delete()
 
+@step(u'When I create a facility')
+def when_i_create_a_facility(step):
+    facility_json = json.loads('{  "uuid": "18a021ed-205c-4e80-ab9c-fbeb2d9c1bcf",  "name": "Some HOSPITAL",  "active": true,  "href": "http://dhis/api-fred/v1/facilities/123",  "createdAt": "2013-01-15T11:14:02.863+0000",  "updatedAt": "2013-01-15T11:14:02.863+0000",  "coordinates": [34.19622, 0.70331],  "identifiers": [{    "agency": "DHIS2",    "context": "DHIS2_UID",    "id": "123"  }],  "properties": {    "dataSets": ["123456"],    "level": 5,    "ownership": "Private Not For Profit",    "parent": "56789",    "type": "General Hospital"  }}')
+    facility = HealthFacility.store_json(facility_json, comment = "Updates from FRED provider")
+    world.uuid = facility.uuid
 
+@step(u'Then I should see it is logged in reversion')
+def then_i_should_see_it_is_logged_in_reversion(step):
+    facility = HealthFacilityBase.objects.get(uuid = world.uuid)
+    version_list = reversion.get_for_object(facility)
+    assert len(version_list) > 0
+    version = version_list[0]
+    assert version.revision.comment == "Updates from FRED provider"

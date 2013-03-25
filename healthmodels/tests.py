@@ -68,7 +68,7 @@ class TestHealthFacilityBase(TestCase):
       assert facility.uuid == facility_json['uuid']
       assert facility.active == False
 
-      HealthFacility.store_json(facility_json)
+      HealthFacility.store_json(facility_json, comment = "Updates from FRED provider")
       facility = HealthFacility.objects.get(id=facility.id)
 
       assert facility.name == facility_json['name']
@@ -83,7 +83,7 @@ class TestHealthFacilityBase(TestCase):
 
       facility_json['name'] = facility_json['name'].encode('utf-8')
 
-      facility = HealthFacility.store_json(facility_json)
+      facility = HealthFacility.store_json(facility_json, comment = "Updates from FRED provider")
       self.failUnless(facility.id)
 
       facility = HealthFacilityBase.objects.get(id = facility.id)

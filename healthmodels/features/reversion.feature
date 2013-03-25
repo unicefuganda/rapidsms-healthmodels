@@ -28,3 +28,7 @@ Feature: Updating facility
   When I mark the facility inactive
   And I attempt to save
   Then I should see my facility changed in fred provider
+
+ Scenario: Store JSON - create
+  When I create a facility
+  Then I should see it is logged in reversion
