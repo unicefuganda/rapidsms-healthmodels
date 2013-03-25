@@ -127,9 +127,11 @@ class HealthFacilityBase(models.Model):
         facility = HealthFacilityBase.objects.get_or_create(uuid = json['uuid'])[0]
         facility.name = json['name']
         facility.active = json['active']
-        facility_type = json['properties']['type']
-        facility.type = HealthFacilityType.objects.get_or_create(name=facility_type, slug=slugify(facility_type))[0]
-        facility.owner = json['properties']['ownership']
+        if  json['properties'].has_key('type'):
+            facility_type = json['properties']['type']
+            facility.type = HealthFacilityType.objects.get_or_create(name=facility_type, slug=slugify(facility_type))[0]
+        if  json['properties'].has_key('ownership'):
+            facility.owner = json['properties']['ownership']
         with reversion.create_revision():
             facility.save(cascade_update = cascade_update)
             reversion.set_comment(comment)
