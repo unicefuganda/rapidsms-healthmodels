@@ -5,6 +5,7 @@ from django.db import IntegrityError
 from mock import *
 from django.conf import settings
 import json
+from django.template.defaultfilters import slugify
 
 class TestHealthFacilityBase(TestCase):
 
@@ -75,6 +76,7 @@ class TestHealthFacilityBase(TestCase):
       assert facility.active == facility_json['active']
       assert facility.uuid == facility_json['uuid']
       assert facility.type.name == facility_json["properties"]["type"]
+      assert facility.type.slug == slugify(facility_json["properties"]["type"])
       assert facility.owner == facility_json['properties']['ownership']
 
 
@@ -92,6 +94,7 @@ class TestHealthFacilityBase(TestCase):
       assert facility.active == facility_json['active']
       assert facility.uuid == facility_json['uuid']
       assert facility.type.name == facility_json["properties"]["type"]
+      assert facility.type.slug == slugify(facility_json["properties"]["type"])
       assert facility.owner == facility_json['properties']['ownership']
 
 

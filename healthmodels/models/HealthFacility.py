@@ -11,6 +11,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
 from rapidsms.models import ExtensibleModelBase
 from rapidsms.contrib.locations.models import Location, Point
+from django.template.defaultfilters import slugify
 import reversion
 from django.conf import settings
 if settings.CASCADE_UPDATE_TO_FRED:
@@ -126,7 +127,8 @@ class HealthFacilityBase(models.Model):
         facility = HealthFacilityBase.objects.get_or_create(uuid = json['uuid'])[0]
         facility.name = json['name']
         facility.active = json['active']
-        facility.type = HealthFacilityType.objects.get_or_create(name=json['properties']['type'])[0]
+        facility_type = json['properties']['type']
+        facility.type = HealthFacilityType.objects.get_or_create(name=facility_type, slug=slugify(facility_type))[0]
         facility.owner = json['properties']['ownership']
         with reversion.create_revision():
             facility.save(cascade_update = cascade_update)
