@@ -12,6 +12,7 @@ from reversion.models import Revision
 from fred_consumer.models import FredConfig, HealthFacilityIdMap,Failure
 from django.db import transaction
 from fred_consumer.fred_connect import FredFacilitiesFetcher
+from time import sleep
 
 FRED_CONFIG = FredConfig.get_settings()
 
@@ -81,13 +82,13 @@ def edit_a_healthfacility(step):
 def edit_a_healthfacility(step):
     world.browser.is_text_present(RANDOM_FACILTY_NAME, wait_time=3)
     world.browser.click_link_by_text(RANDOM_FACILTY_NAME + " ")
+    sleep 2
     assert world.browser.find_by_css('input[name=name]').first.value == RANDOM_FACILTY_NAME
     assert world.browser.find_by_id("id_active").first.checked
 
 @step(u'Then I should see an error')
 def should_see_an_error(step):
-    print world.browser.url
-    print world.browser.url
+    sleep 2
     world.uuid = world.browser.find_by_css('input[name=uuid]').first.value
     assert world.browser.find_by_css('.errorlist').text == 'Cascade update failed'
 
@@ -145,6 +146,7 @@ def when_i_mark_the_facility_inactive(step):
 
 @step(u'Then I should see my facility changed in fred provider')
 def then_i_should_see_my_facility_changed_in_fred_provider(step):
+    sleep 5
     fetcher = FredFacilitiesFetcher(FRED_CONFIG)
     facility_in_fred = fetcher.get_facility(world.uuid)
     assert facility_in_fred['active'] == False
