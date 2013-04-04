@@ -86,6 +86,8 @@ def edit_a_healthfacility(step):
 
 @step(u'Then I should see an error')
 def should_see_an_error(step):
+    print world.browser.url
+    print world.browser.url
     world.uuid = world.browser.find_by_css('input[name=uuid]').first.value
     assert world.browser.find_by_css('.errorlist').text == 'Cascade update failed'
 
