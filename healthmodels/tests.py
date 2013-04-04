@@ -97,7 +97,7 @@ class TestHealthFacilityBase(TestCase):
       assert facility.type.slug == slugify(facility_json["properties"]["type"])
       assert facility.owner == facility_json['properties']['ownership']
 
-      fred_facility_details = FredFacilityDetails.objects.get(uuid=facility_json['uuid'])
+      fred_facility_details = FredFacilityDetail.objects.get(uuid=facility_json['uuid'])
       assert fred_facility_details.h003b == False
 
   def test_store_json_create_failsafe(self):
@@ -115,7 +115,7 @@ class TestHealthFacilityBase(TestCase):
       assert facility.uuid == facility_json['uuid']
       assert facility.type == None
       assert facility.owner == ''
-      fred_facility_details = FredFacilityDetails.objects.get(uuid=facility_json['uuid'])
+      fred_facility_details = FredFacilityDetail.objects.get(uuid=facility_json['uuid'])
       assert fred_facility_details.h003b == False
 
   def test_store_json_h033b_indicator(self):
@@ -127,12 +127,12 @@ class TestHealthFacilityBase(TestCase):
 
     facility = HealthFacilityBase.objects.get(id = facility.id)
 
-    fred_facility_details = FredFacilityDetails.objects.get(uuid=facility_json['uuid'])
+    fred_facility_details = FredFacilityDetail.objects.get(uuid=facility_json['uuid'])
     assert fred_facility_details.h003b == True
 
     facility_json['properties']['dataSets'] = []
     facility = HealthFacility.store_json(facility_json, comment = "Updates from FRED provider")
-    fred_facility_details = FredFacilityDetails.objects.get(uuid=facility_json['uuid'])
+    fred_facility_details = FredFacilityDetail.objects.get(uuid=facility_json['uuid'])
     assert fred_facility_details.h003b == False
 
 
@@ -199,16 +199,16 @@ class TestHealthFacilityBase(TestCase):
         self.failIf(facility.id)
         self.failIf(facility.uuid)
 
-class TestFredFacilityDetails(TestCase):
+class TestFredFacilityDetail(TestCase):
 
     def test_storage(self):
-        fred_facility_details = FredFacilityDetails(uuid="1234", h003b=True)
+        fred_facility_details = FredFacilityDetail(uuid="1234", h003b=True)
         fred_facility_details.save()
         self.failUnless(fred_facility_details.id)
 
     def test_uuid_field(self):
-        fred_facility_details = FredFacilityDetails(uuid="1234", h003b=True)
+        fred_facility_details = FredFacilityDetail(uuid="1234", h003b=True)
         fred_facility_details.save()
 
-        new_fred_facility_details = FredFacilityDetails(uuid="1234", h003b=False)
+        new_fred_facility_details = FredFacilityDetail(uuid="1234", h003b=False)
         self.failUnlessRaises(IntegrityError, new_fred_facility_details.save)

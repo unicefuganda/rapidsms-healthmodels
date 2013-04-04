@@ -125,7 +125,7 @@ class HealthFacilityBase(models.Model):
     @classmethod
     def store_json(self, json, comment, cascade_update = False):
         facility = HealthFacilityBase.objects.get_or_create(uuid = json['uuid'])[0]
-        fred_facility_details = FredFacilityDetails.objects.get_or_create(uuid = json['uuid'])[0]
+        fred_facility_details = FredFacilityDetail.objects.get_or_create(uuid = json['uuid'])[0]
         facility.name = json['name']
         facility.active = json['active']
         if  json['properties'].has_key('type'):
@@ -173,7 +173,7 @@ class HealthFacility(HealthFacilityBase):
         else:
             return True
 
-class FredFacilityDetails(models.Model):
+class FredFacilityDetail(models.Model):
     uuid = models.CharField(max_length=100, blank=False, unique=True, null=False)
     h003b = models.BooleanField(default=True)
 
