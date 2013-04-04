@@ -9,7 +9,7 @@ class Migration(SchemaMigration):
 
     def forwards(self, orm):
         # Adding model 'FredFacilityDetail'
-        db.create_table('healthmodels_FredFacilityDetail', (
+        db.create_table('healthmodels_fredfacilitydetail', (
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('uuid', self.gf('django.db.models.fields.CharField')(unique=True, max_length=100)),
             ('h003b', self.gf('django.db.models.fields.BooleanField')(default=True)),
@@ -19,7 +19,7 @@ class Migration(SchemaMigration):
 
     def backwards(self, orm):
         # Deleting model 'FredFacilityDetail'
-        db.delete_table('healthmodels_FredFacilityDetail')
+        db.delete_table('healthmodels_fredfacilitydetail')
 
 
     models = {
@@ -114,7 +114,7 @@ class Migration(SchemaMigration):
             'facility': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['healthmodels.HealthFacility']"}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'})
         },
-        'healthmodels.FredFacilityDetail': {
+        'healthmodels.fredfacilitydetail': {
             'Meta': {'object_name': 'FredFacilityDetail'},
             'h003b': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
