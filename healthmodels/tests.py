@@ -97,6 +97,9 @@ class TestHealthFacilityBase(TestCase):
       assert facility.type.slug == slugify(facility_json["properties"]["type"])
       assert facility.owner == facility_json['properties']['ownership']
 
+      fred_facility_details = FredFacilityDetails.objects.get(uuid=facility_json['uuid'])
+      assert fred_facility_details.h003b == False
+
   def test_store_json_create_failsafe(self):
       facility_json = json.loads('{  "uuid": "18a021ed-205c-4e80-ab9c-fbeb2d9c1bcf",  "name": "Some HOSPITAL",  "active": true,  "href": "http://dhis/api-fred/v1/facilities/123",  "createdAt": "2013-01-15T11:14:02.863+0000",  "updatedAt": "2013-01-15T11:14:02.863+0000",  "coordinates": [34.19622, 0.70331],  "identifiers": [{    "agency": "DHIS2",    "context": "DHIS2_UID",    "id": "123"  }],  "properties": {    "dataSets": ["123456"],    "level": 5,    "parent": "56789"  }}')
 
@@ -112,6 +115,25 @@ class TestHealthFacilityBase(TestCase):
       assert facility.uuid == facility_json['uuid']
       assert facility.type == None
       assert facility.owner == ''
+      fred_facility_details = FredFacilityDetails.objects.get(uuid=facility_json['uuid'])
+      assert fred_facility_details.h003b == False
+
+  def test_store_json_h033b_indicator(self):
+    facility_json = json.loads('{  "uuid": "18a021ed-205c-4e80-ab9c-fbeb2d9c1bcf",  "name": "Some HOSPITAL",  "active": true,  "href": "http://dhis/api-fred/v1/facilities/123",  "createdAt": "2013-01-15T11:14:02.863+0000",  "updatedAt": "2013-01-15T11:14:02.863+0000",  "coordinates": [34.19622, 0.70331],  "identifiers": [{    "agency": "DHIS2",    "context": "DHIS2_UID",    "id": "123"  }],  "properties": {    "dataSets": ["V1kJRs8CtW4"],    "level": 5,    "parent": "56789"  }}')
+    facility_json['name'] = facility_json['name'].encode('utf-8')
+
+    facility = HealthFacility.store_json(facility_json, comment = "Updates from FRED provider")
+    self.failUnless(facility.id)
+
+    facility = HealthFacilityBase.objects.get(id = facility.id)
+
+    fred_facility_details = FredFacilityDetails.objects.get(uuid=facility_json['uuid'])
+    assert fred_facility_details.h003b == True
+
+    facility_json['properties']['dataSets'] = []
+    facility = HealthFacility.store_json(facility_json, comment = "Updates from FRED provider")
+    fred_facility_details = FredFacilityDetails.objects.get(uuid=facility_json['uuid'])
+    assert fred_facility_details.h003b == False
 
 
   if settings.CASCADE_UPDATE_TO_FRED:
@@ -176,3 +198,17 @@ class TestHealthFacilityBase(TestCase):
         assert mock_create_facility.called == True
         self.failIf(facility.id)
         self.failIf(facility.uuid)
+
+class TestFredFacilityDetails(TestCase):
+
+    def test_storage(self):
+        fred_facility_details = FredFacilityDetails(uuid="1234", h003b=True)
+        fred_facility_details.save()
+        self.failUnless(fred_facility_details.id)
+
+    def test_uuid_field(self):
+        fred_facility_details = FredFacilityDetails(uuid="1234", h003b=True)
+        fred_facility_details.save()
+
+        new_fred_facility_details = FredFacilityDetails(uuid="1234", h003b=False)
+        self.failUnlessRaises(IntegrityError, new_fred_facility_details.save)

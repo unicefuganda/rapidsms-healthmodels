@@ -125,6 +125,7 @@ class HealthFacilityBase(models.Model):
     @classmethod
     def store_json(self, json, comment, cascade_update = False):
         facility = HealthFacilityBase.objects.get_or_create(uuid = json['uuid'])[0]
+        fred_facility_details = FredFacilityDetails.objects.get_or_create(uuid = json['uuid'])[0]
         facility.name = json['name']
         facility.active = json['active']
         if  json['properties'].has_key('type'):
@@ -132,6 +133,12 @@ class HealthFacilityBase(models.Model):
             facility.type = HealthFacilityType.objects.get_or_create(name=facility_type, slug=slugify(facility_type))[0]
         if  json['properties'].has_key('ownership'):
             facility.owner = json['properties']['ownership']
+        if json['properties'].has_key('dataSets'):
+            h003b = settings.FRED_H033B_INDICATOR in json['properties']['dataSets']
+        else:
+            h003b = False
+        fred_facility_details.h003b = h003b
+        fred_facility_details.save()
         with reversion.create_revision():
             facility.save(cascade_update = cascade_update)
             reversion.set_comment(comment)
@@ -166,8 +173,9 @@ class HealthFacility(HealthFacilityBase):
         else:
             return True
 
+class FredFacilityDetails(models.Model):
+    uuid = models.CharField(max_length=100, blank=False, unique=True, null=False)
+    h003b = models.BooleanField(default=True)
 
-
-
-
-
+    class Meta:
+        app_label = 'healthmodels'
