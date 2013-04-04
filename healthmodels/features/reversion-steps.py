@@ -128,6 +128,7 @@ def check_facility_in_provider(step):
     visit("/admin/healthmodels/healthfacility")
     world.browser.is_text_present("ThoughtWorks facility ", wait_time=3)
     world.browser.click_link_by_text("ThoughtWorks facility ")
+    sleep(5)
     uuid = world.browser.find_by_css('input[name=uuid]').first.value
     fetcher = FredFacilitiesFetcher(FRED_CONFIG)
     facility_in_fred = fetcher.get_facility(uuid)
