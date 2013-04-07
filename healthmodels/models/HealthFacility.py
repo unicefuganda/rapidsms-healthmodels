@@ -135,10 +135,10 @@ class HealthFacilityBase(models.Model):
         if  json['properties'].has_key('ownership'):
             facility.owner = json['properties']['ownership']
         if json['properties'].has_key('dataSets'):
-            h003b = settings.FRED_H033B_INDICATOR in json['properties']['dataSets']
+            h033b = settings.FRED_H033B_INDICATOR in json['properties']['dataSets']
         else:
-            h003b = False
-        fred_facility_details.h003b = h003b
+            h033b = False
+        fred_facility_details.h033b = h033b
         fred_facility_details.save()
         with reversion.create_revision():
             facility.save(cascade_update = cascade_update)
@@ -176,7 +176,7 @@ class HealthFacility(HealthFacilityBase):
 
 class FredFacilityDetail(models.Model):
     uuid = models.CharField(max_length=100, blank=False, unique=True, null=False)
-    h003b = models.BooleanField(default=True)
+    h033b = models.BooleanField(default=True)
 
     class Meta:
         app_label = 'healthmodels'
