@@ -91,6 +91,7 @@ class HealthFacilityBase(models.Model):
     last_reporting_date = models.DateField(null=True) #latest submission date
     uuid = models.CharField(max_length=100, blank=True, unique=True, null=True)
     active = models.BooleanField(default=True)
+    deleted = models.BooleanField(default=False)
 
     def __unicode__(self):
         return "%s %s" % (self.name, self.type or '')

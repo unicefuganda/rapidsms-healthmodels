@@ -36,6 +36,19 @@ class TestHealthFacilityBase(TestCase):
 
       assert new_facility.active == False
 
+  def test_deleted_field(self):
+        facility = HealthFacilityBase(name="Dummy")
+        facility.save(cascade_update = False)
+        self.failUnless(facility.id)
+
+        assert facility.deleted == False
+
+        new_facility = HealthFacilityBase(name="Dummy", deleted = True)
+        new_facility.save(cascade_update=False)
+        self.failUnless(new_facility.id)
+
+        assert new_facility.deleted == True
+
 
   def test_storage_with_feature_turned_off(self):
       orig = settings.CASCADE_UPDATE_TO_FRED
