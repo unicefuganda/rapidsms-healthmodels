@@ -215,13 +215,15 @@ class TestHealthFacilityBase(TestCase):
 class TestFredFacilityDetail(TestCase):
 
     def test_storage(self):
-        fred_facility_details = FredFacilityDetail(uuid="1234", h033b=True)
+        facility = HealthFacility(name="Dummy 1", uuid="randomuuid")
+        fred_facility_details = FredFacilityDetail(uuid=facility, h033b=True)
         fred_facility_details.save()
         self.failUnless(fred_facility_details.id)
 
     def test_uuid_field(self):
-        fred_facility_details = FredFacilityDetail(uuid="1234", h033b=True)
+        facility = HealthFacility(name="Dummy 1", uuid="randomuuid")
+        fred_facility_details = FredFacilityDetail(uuid=facility, h033b=True)
         fred_facility_details.save()
 
-        new_fred_facility_details = FredFacilityDetail(uuid="1234", h033b=False)
+        new_fred_facility_details = FredFacilityDetail(uuid=facility, h033b=False)
         self.failUnlessRaises(IntegrityError, new_fred_facility_details.save)
