@@ -130,8 +130,13 @@ class HealthFacilityBase(models.Model):
         facility.name = json['name']
         facility.active = json['active']
         if  json['properties'].has_key('type'):
-            facility_type = json['properties']['type']
-            facility.type = HealthFacilityType.objects.get_or_create(name=facility_type, slug=slugify(facility_type))[0]
+            slug = ''.join(e for e in json['properties']['type'].lower() if e.isalnum())
+            facility_type = HealthFacilityType.objects.filter(slug=slug)
+            if not facility_type:
+                facility_type = HealthFacilityType.objects.create(name=json['properties']['type'], slug=slug)
+            else:
+                facility_type = facility_type[0]
+            facility.type = facility_type
         if  json['properties'].has_key('ownership'):
             facility.owner = json['properties']['ownership']
         if json['properties'].has_key('dataSets'):

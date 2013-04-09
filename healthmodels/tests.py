@@ -89,7 +89,7 @@ class TestHealthFacilityBase(TestCase):
       assert facility.active == facility_json['active']
       assert facility.uuid == facility_json['uuid']
       assert facility.type.name == facility_json["properties"]["type"]
-      assert facility.type.slug == slugify(facility_json["properties"]["type"])
+      assert facility.type.slug == "generalhospital"
       assert facility.owner == facility_json['properties']['ownership']
 
 
@@ -107,7 +107,7 @@ class TestHealthFacilityBase(TestCase):
       assert facility.active == facility_json['active']
       assert facility.uuid == facility_json['uuid']
       assert facility.type.name == facility_json["properties"]["type"]
-      assert facility.type.slug == slugify(facility_json["properties"]["type"])
+      assert facility.type.slug == "generalhospital"
       assert facility.owner == facility_json['properties']['ownership']
 
       fred_facility_details = FredFacilityDetail.objects.get(uuid=facility_json['uuid'])
