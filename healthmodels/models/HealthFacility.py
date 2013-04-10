@@ -125,7 +125,14 @@ class HealthFacilityBase(models.Model):
 
     @classmethod
     def store_json(self, json, comment, cascade_update = False):
-        facility = HealthFacilityBase.objects.get_or_create(uuid = json['uuid'])[0]
+        uuid = json['uuid']
+        existing_facility = HealthFacilityBase.objects.filter(uuid = uuid)
+        if existing_facility:
+            facility = existing_facility[0]
+        else:
+            facility = HealthFacility(uuid=uuid)
+            facility.save(cascade_update=False)
+            facility = HealthFacilityBase.objects.get(uuid=uuid)
         fred_facility_details = FredFacilityDetail.objects.get_or_create(uuid = facility)[0]
         facility.name = json['name']
         facility.active = json['active']
