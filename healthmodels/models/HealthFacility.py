@@ -132,7 +132,7 @@ class HealthFacilityBase(models.Model):
         if  json['properties'].has_key('type'):
             slug = ''.join(e for e in json['properties']['type'].lower() if e.isalnum())
             facility_type = HealthFacilityType.objects.filter(slug=slug)
-            if not facility_type:
+            if len(facility_type) == 0:
                 facility_type = HealthFacilityType.objects.create(name=json['properties']['type'], slug=slug)
             else:
                 facility_type = facility_type[0]
