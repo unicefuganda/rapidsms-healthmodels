@@ -88,7 +88,7 @@ class HealthFacilityBase(models.Model):
     district = models.TextField(blank=True, null=True, default='')
     owner = models.TextField(null=True, blank=True, default='', choices=OWNERS)
     authority = models.TextField(null=True, blank=True, default='', choices=AUTHORITIES)
-    last_reporting_date = models.DateField(null=True) #latest submission date
+    last_reporting_date = models.DateField(null=True)  # latest submission date
     uuid = models.CharField(max_length=100, blank=True, unique=True, null=True)
     active = models.BooleanField(default=True)
     deleted = models.BooleanField(default=False)
@@ -109,7 +109,7 @@ class HealthFacilityBase(models.Model):
                 if not self.uuid:
                     raise ValidationError('Cascade update failed')
 
-    def save(self, cascade_update = True, *args,  **kwargs):
+    def save(self, cascade_update=True, *args, **kwargs):
 
         if cascade_update:
             self.clean(*args, **kwargs)
@@ -124,16 +124,16 @@ class HealthFacilityBase(models.Model):
         super(HealthFacilityBase, self).save(*args, **kwargs)
 
     @classmethod
-    def store_json(self, json, comment, cascade_update = False):
+    def store_json(self, json, comment, cascade_update=False):
         uuid = json['uuid']
-        existing_facility = HealthFacilityBase.objects.filter(uuid = uuid)
+        existing_facility = HealthFacilityBase.objects.filter(uuid=uuid)
         if existing_facility:
             facility = existing_facility[0]
         else:
             facility = HealthFacility(uuid=uuid)
             facility.save(cascade_update=False)
             facility = HealthFacilityBase.objects.get(uuid=uuid)
-        fred_facility_details = FredFacilityDetail.objects.get_or_create(uuid = facility)[0]
+        fred_facility_details = FredFacilityDetail.objects.get_or_create(uuid=facility)[0]
         facility.name = json['name']
         facility.active = json['active']
         if  json['properties'].has_key('type'):
@@ -153,9 +153,16 @@ class HealthFacilityBase(models.Model):
         fred_facility_details.h033b = h033b
         fred_facility_details.save()
         with reversion.create_revision():
-            facility.save(cascade_update = cascade_update)
+            facility.save(cascade_update=cascade_update)
             reversion.set_comment(comment)
         return facility
+
+    @property
+    def is_hmis033b(self):
+        """returns true if HMIS 033B reporting facility"""
+        if self.fredfacilitydetail_set.count():
+            return self.fredfacilitydetail_set.all()[0].h033b
+        return False
 
 
 reversion.register(HealthFacilityBase)
