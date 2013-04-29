@@ -164,8 +164,8 @@ class HealthFacilityBase(models.Model):
             return self.fredfacilitydetail_set.all()[0].h033b
         return False
 
-
-reversion.register(HealthFacilityBase)
+if not reversion.is_registered(HealthFacilityBase):
+    reversion.register(HealthFacilityBase)
 
 class HealthFacility(HealthFacilityBase):
     __metaclass__ = ExtensibleModelBase
