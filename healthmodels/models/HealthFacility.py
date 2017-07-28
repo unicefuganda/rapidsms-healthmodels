@@ -70,7 +70,7 @@ class HealthFacilityBase(models.Model):
         app_label = 'healthmodels'
 
     name = models.CharField(max_length=100)
-    code = models.CharField(max_length=50, blank=True, null=False)
+    code = models.CharField(max_length=50, blank=True, unique=True, null=False)
     type = models.ForeignKey(HealthFacilityType, blank=True, null=True)
     # Catchment areas should be locations that makes sense independently, i.e.
     # a city, town, village, parish, region, district, etc.
@@ -125,14 +125,14 @@ class HealthFacilityBase(models.Model):
 
     @classmethod
     def store_json(self, json, comment, cascade_update=False):
-        uuid = json['uuid']
-        existing_facility = HealthFacilityBase.objects.filter(uuid=uuid)
+        id = json['id']
+        existing_facility = HealthFacilityBase.objects.filter(code=id)
         if existing_facility:
             facility = existing_facility[0]
         else:
-            facility = HealthFacility(uuid=uuid)
+            facility = HealthFacility(code=id)
             facility.save(cascade_update=False)
-            facility = HealthFacilityBase.objects.get(uuid=uuid)
+            facility = HealthFacilityBase.objects.get(code=id)
         fred_facility_details = FredFacilityDetail.objects.get_or_create(uuid=facility)[0]
         facility.name = json['name']
         facility.active = json['active']
@@ -194,7 +194,7 @@ class HealthFacility(HealthFacilityBase):
             return True
 
 class FredFacilityDetail(models.Model):
-    uuid = models.ForeignKey(HealthFacilityBase, to_field='uuid', unique=True)
+    uuid = models.ForeignKey(HealthFacilityBase, to_field='code', unique=True)
     h033b = models.BooleanField(default=True)
 
     class Meta:
